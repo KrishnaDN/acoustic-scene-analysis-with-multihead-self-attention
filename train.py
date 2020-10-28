@@ -31,10 +31,6 @@ from sklearn.metrics import classification_report
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 
-### Data loaders
-dataset_train = SpeechDataGenerator(manifest='meta/train.txt')
-dataloader_train = DataLoader(dataset_train, batch_size=10, shuffle=True,collate_fn=collate_fn) 
-
 
 def arg_parser():
     ########## Argument parser
@@ -56,7 +52,7 @@ def train(model, data_loader, device, optimizer, criterion, epoch):
     total_loss =[]
     gt_labels = []
     pred_labels =[]
-    for i_batch, sample_batched in enumerate(dataloader_train):
+    for i_batch, sample_batched in enumerate(data_loader):
         features = torch.stack(sample_batched[0])
         labels = torch.stack(sample_batched[1])
         features, labels = features.to(device), labels.to(device)
@@ -84,7 +80,7 @@ def evaluation(model, data_loader, device, optimizer, criterion, epoch):
     gt_labels = []
     pred_labels =[]
     with torch.no_grad():
-        for i_batch, sample_batched in enumerate(dataloader_train):
+        for i_batch, sample_batched in enumerate(data_loader):
             features = torch.stack(sample_batched[0])
             labels = torch.stack(sample_batched[1])
             features, labels = features.to(device), labels.to(device)
